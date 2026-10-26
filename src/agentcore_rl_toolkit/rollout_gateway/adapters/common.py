@@ -20,6 +20,7 @@ tokenizer-agnostic:
 
 import asyncio
 import dataclasses
+import json
 import logging
 import time
 from collections.abc import Callable
@@ -46,6 +47,33 @@ class Session:
 
     sampling_defaults: dict = dataclasses.field(default_factory=dict)
     max_context_tokens: int = 0
+    #: reasoning of each reply served in this session, keyed by the reply without it
+    reasoning: dict[str, str] = dataclasses.field(default_factory=dict)
+
+
+def _reply_key(message: dict) -> str:
+    return json.dumps({k: v for k, v in message.items() if k != "reasoning_content"}, sort_keys=True, default=str)
+
+
+def _restore_omitted_reasoning(messages: list[dict], served: dict[str, str]) -> list[dict]:
+    """Return ``messages`` with reasoning put back on assistant turns that omit it.
+
+    Clients such as Strands' ``OpenAIModel`` drop ``reasoning_content`` from the history
+    they send back, so a served reply would otherwise fail the history match and
+    re-render without the reasoning the model generated. Only an assistant message
+    that equals a served reply apart from the missing field is filled in; one with
+    edited or summarized reasoning is left as sent.
+    """
+    if not served:
+        return messages
+    out = []
+    for message in messages:
+        if message.get("role") == "assistant" and not message.get("reasoning_content"):
+            reasoning = served.get(_reply_key(message))
+            if reasoning:
+                message = {**message, "reasoning_content": reasoning}
+        out.append(message)
+    return out
 
 
 @dataclasses.dataclass
@@ -381,6 +409,7 @@ class BaseAdapter:
         t0 = time.monotonic()
         try:
             translated, tools_schema = self._translate(body)
+            translated = _restore_omitted_reasoning(translated, s.reasoning)
             if self.healer is not None:
                 # linear mode: splice canonical served ids over the drifted re-render
                 # before generation (the healer does the render internally).
@@ -481,6 +510,8 @@ class BaseAdapter:
                 response_message=reply.manager_message,
                 metadata={"sid": sid},
             )
+            if reply.manager_message.get("reasoning_content"):
+                s.reasoning[_reply_key(reply.manager_message)] = reply.manager_message["reasoning_content"]
             return response
         finally:
             self.inflight.get(sid, set()).discard(task)
