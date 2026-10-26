@@ -195,6 +195,7 @@ _TEMPLATE_HASHES: dict[str, str] = {
     "273d8e0e683b885071fb17e08d71e5f2a5ddfb5309756181681de4f5a1822d80": "qwen3_5",  # Qwen3.5 (nothink)
     "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715": "qwen3_5",  # Qwen3.5 (think)
     "e84f32a23fdda27689f868aa4a1a5621f41133e51a48d7f3efcbea2839574259": "qwen3_5",  # Qwen3.6
+    "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041": "qwen3_5",  # Qwen3.8
     "ab7813c3abdd9cb655905a410728b26c7884eca45ddfab8d9f931553485a7862": "qwen3_5",  # Nemotron-3 Nano
     "575fb74f54ed264df9047d0ecce3c98938aae953fb4f50356675706264cbb68a": "qwen3_5",  # Nemotron-3 Super
     "82753bef5cedc4932c1ed509b5c9a12be680fd86d1adb65bc3f7398d11c8eebc": "qwen3_5",  # Nemotron-3 Ultra
