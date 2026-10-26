@@ -12,6 +12,7 @@ yet supported.
 
 import json
 import logging
+import re
 import secrets
 import time
 from typing import Any
@@ -219,6 +220,21 @@ def _tools_to_chat_tools(tools: list[dict] | None) -> list[dict] | None:
 # --- Reply building: parsed output -> OpenAI wire message + manager_message ---
 
 
+_TOOL_NAME_RE = re.compile(r"^[a-zA-Z0-9_-]{1,64}$")
+
+
+def _valid_tool_name(name: str) -> str:
+    """Coerce a hallucinated tool name into the OpenAI function-name charset.
+
+    Clients such as Strands rewrite an off-spec name to ``INVALID_TOOL_NAME`` before
+    echoing it back, so the history would no longer match the served reply.
+    """
+    name = str(name or "")
+    if _TOOL_NAME_RE.match(name):
+        return name
+    return re.sub(r"[^a-zA-Z0-9_-]", "_", name)[:64] or "invalid_tool"
+
+
 def _build_reply_parts(parsed: ParsedOutput, finish: str) -> tuple[dict[str, Any], dict[str, Any], str]:
     """Return (wire_message, manager_message, wire_finish).
 
@@ -233,7 +249,7 @@ def _build_reply_parts(parsed: ParsedOutput, finish: str) -> tuple[dict[str, Any
     wire_tool_calls: list[dict[str, Any]] = []
     manager_tool_calls: list[dict[str, Any]] = []
     for tu in parsed.tool_uses:
-        name = tu.get("name", "tool")
+        name = _valid_tool_name(tu.get("name", "tool"))
         args_dict = tu.get("input") or {}
         if not isinstance(args_dict, dict):
             args_dict = {"_raw_arguments": str(args_dict)}
