@@ -1,0 +1,42 @@
+# CDK deploy config for the SWE-grep agent on Bedrock AgentCore Runtime.
+# Copy to config.yaml and fill in the first two sections.
+#
+# These values are folded into CDK context by app.py; `cdk deploy -c key=value` overrides a key.
+# Keys map 1:1 to the context knobs documented in swegrep_agent_stack.py.
+
+# --- AWS account / region (a concrete region is required for the VPC lookup) ---
+awsAccount: "123456789012"
+awsRegion: "us-east-1"
+
+# --- VPC networking ---------------------------------------------------------
+# The runtime ENIs must sit in the SAME VPC as the GPU host running the trainer and its rollout
+# gateway, so the agent can reach the gateway's private address.
+vpcId: "vpc-..."
+# public | private-egress | private-isolated. A default VPC has only public subnets.
+subnetType: "public"
+# The GPU host's security group; the stack opens gatewayPort (training) and 8399 (benchmarks: the
+# agent calls vLLM directly) on it to the runtime.
+# Leave "" to open the ports yourself (RuntimeSecurityGroupId output).
+gatewaySecurityGroupId: "sg-..."
+gatewayPort: 9090
+
+# --- VPC endpoints ----------------------------------------------------------
+# true: create the S3 gateway + ecr.api/ecr.dkr/logs endpoints. If another stack in this VPC
+# already owns them, set false and point endpointSecurityGroupId at its SG.
+createVpcEndpoints: true
+# endpointSecurityGroupId: "sg-..."
+
+# --- Clean teardown ---------------------------------------------------------
+# AgentCore pins the runtime ENIs ~8h after delete, so a stack that owns the runtime SG hangs on
+# destroy. retainRuntimeSg keeps the SG (deletable after ~8h); runtimeSecurityGroupId reuses one.
+retainRuntimeSg: true
+# runtimeSecurityGroupId: "sg-..."
+
+runtimeName: "swegrep_agent"
+# Recipe whose swegrep.runtime_env (reward and agent settings) the runtime gets. Train a different
+# recipe by redeploying: bash cdk/deploy.sh -c recipe=recipes/ablations/beta1.json
+recipe: "recipes/final.json"
+# resultBucket / corpusBucket: reuse existing buckets; leave commented to let the stack create
+# (and retain) them. Populate the corpus with scripts/prepare_corpus.py after deploying.
+# resultBucket: "..."
+# corpusBucket: "..."
