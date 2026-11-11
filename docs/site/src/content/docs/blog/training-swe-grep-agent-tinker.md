@@ -186,9 +186,9 @@ Training the model using the original patch line ranges was also tested, however
 
 | Gold labels | SWE-Explore | ContextBench |
 | --- | ---: | ---: |
-| Raw patch hunks | 15.7 | 32.1 |
-| GLM-5.3 regions ∪ patch | 27.5 | 34.2 |
-| **Patch hunks ±20 lines** | **30.5** | **36.0** |
+| Raw patch | 15.7 | 32.1 |
+| GLM-5.3 regions | 27.5 | 34.2 |
+| **Raw Patch ±20 lines** | **30.5** | **36.0** |
 
 ![Gold label ablation: against the base model, raw patch hunks score −1.8 on SWE-Explore and +4.1 on ContextBench Lite, GLM regions +10.0 and +6.2, and patch ±20 windows +13.0 and +8.0](../../../assets/blog/swe-grep-tinker/gold-label-ablation.png)
 
