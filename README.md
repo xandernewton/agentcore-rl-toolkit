@@ -77,6 +77,12 @@ repositories, office applications, and stateful customer-service environments.
       <td><strong>17.5 → 30.5</strong> (line F1)</td>
       <td><a href="examples/strands_swegrep_agent/">Agent code</a></td>
     </tr>
+    <tr>
+      <td><strong>Email search</strong><br/>Strands · Enron QA · Miles</td>
+      <td><a href="https://huggingface.co/Qwen/Qwen3-8B">Qwen3-8B</a></td>
+      <td><strong>43% → 86%</strong> (answer accuracy)</td>
+      <td><a href="examples/strands_email_agent/">Agent code</a></td>
+    </tr>
   </tbody>
 </table>
 
@@ -206,6 +212,7 @@ for installation, configuration, and training.
 | Software engineering · SWE-Gym | OpenHands | [Guide](examples/openhands_swe_agent/README.md) |
 | Terminal tasks · Harbor / TMax | mini-swe-agent | [Guide](examples/tmax_agent/README.md) |
 | Code retrieval · SWE-Explore, ContextBench | Strands | [Guide](examples/strands_swegrep_agent/README.md) |
+| Email search · Enron QA, trained with Miles | Strands | [Guide](examples/strands_email_agent/README.md) |
 
 **Terminal agents with separate sandboxes.** The
 [terminal agent example](examples/tmax_agent/README.md) uses the Sandbox SDK to

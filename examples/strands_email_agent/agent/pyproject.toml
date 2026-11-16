@@ -1,0 +1,14 @@
+[project]
+name = "strands-email-agent-example"
+version = "0.1.0"
+description = "Example: Strands email-search agent on Bedrock AgentCore, trained with Miles"
+requires-python = ">=3.11"
+dependencies = [
+    "agentcore-rl-toolkit[core]==0.2.0",
+    "boto3>=1.43.79",
+    # email_miles/message_matcher.py depends on how this version replays a conversation.
+    "strands-agents[openai]==1.52.0",
+]
+
+[tool.setuptools]
+py-modules = ["rl_app", "email_db", "judge", "reward"]

@@ -1,0 +1,19 @@
+.env
+.venv/
+.cache/
+__pycache__/
+*.pyc
+.pytest_cache/
+uv.lock
+# written by `agentcore configure`
+.bedrock_agentcore/
+.bedrock_agentcore.yaml
+# built by agent/build_db.py
+agent/enron_emails.db
+# written by email_miles/prepare_data.py
+data/
+# run outputs
+runs/
+wandb/
+# tracked configs (re-included when nested in a repo that ignores *.json)
+!recipes/*.json

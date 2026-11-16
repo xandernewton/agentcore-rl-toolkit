@@ -1,0 +1,22 @@
+{
+  "hf_model": "Qwen/Qwen3-8B",
+  "miles_model": "qwen3-8B",
+  "tito_model": "qwen3",
+  "dataset": "data/train.jsonl",
+  "eval_dataset": "data/val.jsonl",
+  "steps": 20,
+  "batch_size": 24,
+  "group_size": 16,
+  "learning_rate": 5e-05,
+  "lora_rank": 16,
+  "lora_alpha": 32,
+  "max_seq_len": 40960,
+  "max_tokens_per_turn": 8192,
+  "max_tokens_per_gpu": 32768,
+  "gpus": 8,
+  "rollouts_per_gpu": 48,
+  "session_servers": 4,
+  "eval_interval": 5,
+  "eval_samples": 2,
+  "save_interval": 5
+}
